@@ -170,16 +170,14 @@ resource "aws_instance" "web_server" {
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
   # Apache web server with instance identifier
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo apt-get update
-              sudo apt-get install -y apache2
-              sudo systemctl start apache2
-              sudo systemctl enable apache2
-              INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-              echo "<h1>Hello World from Instance: $INSTANCE_ID</h1><p>Server ${count.index + 1}</p>" | sudo tee /var/www/html/index.html
-              EOF
-
+user_data = <<-EOF
+            #!/bin/bash
+            sudo apt-get update
+            sudo apt-get install -y apache2
+            sudo systemctl start apache2
+            sudo systemctl enable apache2
+            echo "<h1>Hello World</h1><p>Server ${count.index + 1}</p>" | sudo tee /var/www/html/index.html
+            EOF
   tags = {
     Name = "web-server-${count.index + 1}"
   }

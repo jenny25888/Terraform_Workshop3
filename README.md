@@ -40,54 +40,54 @@ This project deploys a scalable web server infrastructure on AWS using Terraform
 
 - AWS Account (AWS Academy Learner Lab)
 - Terraform >= 1.2
-- Terraform Cloud Account (kostenlos)
-- GitHub Account (für CI/CD)
+- Terraform Cloud Account (free)
+- GitHub Account (for CI/CD)
 
 ---
 
 ## Terraform Cloud Setup
 
-Terraform Cloud speichert den **State** zentral und ermöglicht sichere CI/CD-Pipelines.
+Terraform Cloud stores the **State** centrally and enables secure CI/CD pipelines.
 
-### 1. Terraform Cloud Account erstellen
+### 1. Create Terraform Cloud Account
 
-1. Gehe zu [app.terraform.io](https://app.terraform.io)
-2. Erstelle einen kostenlosen Account
-3. Erstelle eine **Organization** (z.B. `mein-name-org`)
+1. Go to [app.terraform.io](https://app.terraform.io)
+2. Create a free account
+3. Create an **Organization** (e.g. `my-name-org`)
 
-### 2. Workspace erstellen
+### 2. Create Workspace
 
 1. In Terraform Cloud: **Projects & workspaces** → **New Workspace**
-2. Wähle **API-driven workflow**
+2. Choose **API-driven workflow**
 3. Name: `aws-loadbalancer`
-4. Klicke **Create workspace**
+4. Click **Create workspace**
 
-### 3. Execution Mode auf "Local" setzen
+### 3. Set Execution Mode to "Local"
 
-⚠️ **Wichtig**: Da wir GitHub Actions für die Ausführung nutzen:
+**Important**: GitHub Actions for execution:
 
-1. Gehe zu deinem Workspace → **Settings** → **General**
-2. Unter **Execution Mode** wähle: **Local**
-3. Klicke **Save settings**
+1. Go to your Workspace → **Settings** → **General**
+2. Under **Execution Mode** select: **Local**
+3. Click **Save settings**
 
-> Bei "Local" Mode speichert Terraform Cloud nur den State, während GitHub Actions die Terraform-Befehle ausführt.
+> In "Local" mode, Terraform Cloud only stores the state, while GitHub Actions executes the Terraform commands.
 
-### 4. API Token erstellen
+### 4. Create API Token
 
-Für GitHub Actions brauchst du einen API Token:
+For GitHub Actions you need an API Token:
 
-1. Klicke auf dein **Profilbild** (oben rechts) → **User Settings**
+1. Click on your **Profile picture** (top right) → **User Settings**
 2. **Tokens** → **Create an API token**
 3. Description: `GitHub Actions`
-4. Kopiere den Token (wird nur einmal angezeigt!)
+4. Copy the token (only shown once!)
 
-### 5. Konfiguration anpassen
+### 5. Update Configuration
 
-In `main.tf` deine Organisation eintragen:
+In `main.tf` enter your organization:
 
 ```hcl
 cloud {
-  organization = "DEINE-ORGANISATION"  # <- Hier ändern!
+  organization = "YOUR-ORGANIZATION"  # <- Change this!
 
   workspaces {
     name = "aws-loadbalancer"
@@ -101,26 +101,26 @@ cloud {
 
 ### Setup GitHub Secrets
 
-Du brauchst **4 Secrets** in GitHub (Settings → Secrets → Actions):
+You need **4 Secrets** in GitHub (Settings → Secrets → Actions):
 
-| Secret Name | Beschreibung | Wo zu finden |
+| Secret Name | Description | Where to find |
 |-------------|--------------|--------------|
 | `TF_API_TOKEN` | Terraform Cloud API Token | Terraform Cloud → User Settings → Tokens |
 | `AWS_ACCESS_KEY_ID` | AWS Access Key | AWS Academy → AWS Details → Show |
 | `AWS_SECRET_ACCESS_KEY` | AWS Secret Key | AWS Academy → AWS Details → Show |
 | `AWS_SESSION_TOKEN` | AWS Session Token | AWS Academy → AWS Details → Show |
 
-### Credentials in AWS Academy finden
+### Find Credentials in AWS Academy
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │  AWS Academy Learner Lab                            │
 │                                                     │
-│  [Start Lab]  [AWS 🟢]  [AWS Details] ← Klicken     │
+│  [Start Lab]  [AWS 🟢]  [AWS Details] ← Click       │
 │                              │                      │
 │                              ▼                      │
 │  ┌─────────────────────────────────────────────┐   │
-│  │ AWS CLI:  [Show] ← Dann hier                │   │
+│  │ AWS CLI:  [Show] ← Then here                │   │
 │  │                                             │   │
 │  │ [default]                                   │   │
 │  │ aws_access_key_id=ASIAX...                  │   │
@@ -130,16 +130,16 @@ Du brauchst **4 Secrets** in GitHub (Settings → Secrets → Actions):
 └─────────────────────────────────────────────────────┘
 ```
 
-### ⚠️ Wichtig bei AWS Academy
+### ⚠️ Important for AWS Academy
 
-- Credentials sind nur **~4 Stunden gültig**
-- Nach Lab-Neustart: **GitHub Secrets aktualisieren**
-- Lab muss **laufen** (grüner Punkt) während Workflows laufen
+- Credentials are only valid for **~4 hours**
+- After Lab restart: **Update GitHub Secrets**
+- Lab must be **running** (green dot) while workflows run
 
 ## Local Usage
 
 ```bash
-# Login to Terraform Cloud (einmalig)
+# Login to Terraform Cloud (one-time)
 terraform login
 
 # Initialize Terraform

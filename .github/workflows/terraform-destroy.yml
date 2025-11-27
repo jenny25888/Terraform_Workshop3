@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Invalid Confirmation Message
         run: |
-          echo "## ❌ Destruction Cancelled" >> $GITHUB_STEP_SUMMARY
+          echo "## Destruction Cancelled" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "You must type 'destroy' to confirm the destruction of resources." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
