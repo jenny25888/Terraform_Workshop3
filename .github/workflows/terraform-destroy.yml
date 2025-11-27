@@ -1,0 +1,76 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type "destroy" to confirm destruction of all resources'
+        required: true
+        type: string
+
+env:
+  TF_LOG: INFO
+  AWS_REGION: us-east-1
+
+jobs:
+  terraform-destroy:
+    name: 'Terraform Destroy'
+    runs-on: ubuntu-latest
+    
+    # Only run if confirmation is provided
+    if: github.event.inputs.confirm_destroy == 'destroy'
+    
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Required for AWS Academy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy Plan
+        run: terraform plan -destroy -out=tfplan-destroy
+
+      - name: Terraform Destroy
+        run: terraform apply -auto-approve tfplan-destroy
+
+      - name: Destruction Summary
+        run: |
+          echo "## Terraform Destroy Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All AWS resources have been successfully destroyed." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Destroyed at:** $(date)" >> $GITHUB_STEP_SUMMARY
+
+  invalid-confirmation:
+    name: 'Invalid Confirmation'
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm_destroy != 'destroy'
+    
+    steps:
+      - name: Invalid Confirmation Message
+        run: |
+          echo "## ❌ Destruction Cancelled" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "You must type 'destroy' to confirm the destruction of resources." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**You entered:** ${{ github.event.inputs.confirm_destroy }}" >> $GITHUB_STEP_SUMMARY
+          exit 1
