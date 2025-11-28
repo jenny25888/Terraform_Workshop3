@@ -6,7 +6,7 @@ on:
       instance_count:
         description: 'Number of EC2 instances to create'
         required: false
-        default: '2'
+        default: '5'
         type: string
 
 env:
