@@ -130,12 +130,6 @@ You need **4 Secrets** in GitHub (Settings → Secrets → Actions):
 └─────────────────────────────────────────────────────┘
 ```
 
-### ⚠️ Important for AWS Academy
-
-- Credentials are only valid for **~4 hours**
-- After Lab restart: **Update GitHub Secrets**
-- Lab must be **running** (green dot) while workflows run
-
 ## Local Usage
 
 ```bash
